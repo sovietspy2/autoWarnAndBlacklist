@@ -96,7 +96,7 @@ def generate_iptables_script(lines_array):
     if (lines_array):
         # creates a new script and adds lines to it
         now = datetime.datetime.now()
-        f = open("blacklist_ips_{}.sh".format(
+        f = open("/home/sovietspy2/blacklist_ips_{}.sh".format(
             now.strftime("%Y-%m-%d-%H-%M")), "w+")
 
         for line in lines_array:
