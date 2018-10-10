@@ -25,25 +25,30 @@ logging.basicConfig(filename='program.log', level=logging.INFO)
 
 
 def backup_original_log(log):
-    """ copy log file to script folder """
-    now = datetime.datetime.now()
-    log_name = "log-"+str(now.strftime("%Y-%m-%d-%H-%M"))+".log"
-    shutil.copy(log, log_name)
+    if (os.stat(log).st_size != 0):
+        """ copy log file to script folder """
+        now = datetime.datetime.now()
+        log_name = "log-"+str(now.strftime("%Y-%m-%d-%H-%M"))+".log"
+        shutil.copy2(log, log_name)
+    else:
+        logging.info("File was empty no threats!")
 
 
 def read_file(path):
-    with open(path) as f:
-        content = f.readlines()
+    if (os.stat(path).st_size != 0):
+        with open(path) as f:
+            content = f.readlines()
 
-    # delete old log
-    os.remove(path)
-    # you may also want to remove whitespace characters like `\n` at the end of each line
-    content = [x.strip() for x in content]
-    # we need lines that contains the word Failed
-    content = [x for x in content if "Failed" in x]
-    # for line in content:
-    #    print(line)
-    return content
+        # delete old log
+        os.remove(path)
+        # you may also want to remove whitespace characters like `\n` at the end of each line
+        content = [x.strip() for x in content]
+        # we need lines that contains the word Failed
+        content = [x for x in content if "Failed" in x]
+        # for line in content:
+        #    print(line)
+        return content
+    return ""
 
 
 def send_email(lines):
