@@ -30,7 +30,7 @@ def read_file(path):
     with open(path) as f:
         content = f.readlines()
     # you may also want to remove whitespace characters like `\n` at the end of each line
-    content = [x.strip() for x in content]
+    #content = [x.strip() for x in content]
     # we need lines that contains the word Failed
     content = [x for x in content if "Failed" in x]
     # for line in content:
