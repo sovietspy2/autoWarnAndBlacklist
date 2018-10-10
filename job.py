@@ -5,13 +5,13 @@
 """
 Creates a copy of the log file and name it accoird to the current date
 Reads the log and look for IP addresses
-Generates ip tables script 
+Generates ip tables script
 """
 import sys
 import shutil
 import os.path
 import datetime
-
+import logging
 import smtplib
 from email.mime.text import MIMEText
 
@@ -19,6 +19,9 @@ from email.mime.text import MIMEText
 whitelisted_ip = "1.2.3.4.5.6.7"
 email_address = "hangbarna@gmail.com"
 log_path = "/var/log/auth.log"  # default for ubuntu
+file_not_found_error_message = "ERROR: Supplied file on path does not exist!"
+program_log = ""
+logging.basicConfig(filename='program.log', level=logging.INFO)
 
 
 def backup_original_log(log):
@@ -55,25 +58,29 @@ def send_email(lines):
     msg['To'] = email_address
     s = smtplib.SMTP('localhost')
     s.send_message(msg)
-    print("email was sent to:" + email_address)
+    logging.info("email was sent to:" + email_address)
     s.quit()
 
 
 def current_path():
     if (len(sys.argv) == 1):
-        print("No argument passed using default: "+log_path)
-        return log_path
+        if (os.path.isfile(log_path)):
+            logging.info("No argument passed using default: "+log_path)
+            return log_path
+        else:
+            sys.exit(file_not_found_error_message)
+            logging.error(file_not_found_error_message)
     else:
         if (os.path.isfile(sys.argv[1])):
-            print("Using supplied path:"+sys.argv[1])
+            logging.info("Using supplied path:"+sys.argv[1])
             return sys.argv[1]
         else:
-            sys.exit("ERROR: Supplied file on path does not exist!")
+            sys.exit(file_not_found_error_message)
+            logging.error(file_not_found_error_message)
 
 
 if __name__ == "__main__":
     path = current_path()
-    print("Using path"+path)
     backup_original_log(path)
     lines = read_file(path)
     send_email(lines)
