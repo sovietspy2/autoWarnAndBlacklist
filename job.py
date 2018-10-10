@@ -46,9 +46,11 @@ def get_new_log_entries():
 
         new_lines = []
 
+        last = []
         for i in range(0, original_length):
-            if original[i] != temp[i]:
+            if original[i] != temp[i] and temp[i] not in last:
                 # we only care about failed login attempts
+                last.append(original[i])
                 if ("Failed" in original[i]):
                     new_lines.append(original[i])
             else:
