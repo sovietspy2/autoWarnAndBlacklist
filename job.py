@@ -54,7 +54,8 @@ def get_new_log_entries():
                 if ("Failed" in original[i]):
                     new_lines.append(original[i])
 
-
+        #we have to update the temp log file
+        shutil.copy2(log_path, temp_log_path) 
         return new_lines
 
 
