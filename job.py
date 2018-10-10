@@ -19,36 +19,46 @@ import re
 whitelisted_ip = ["80.123.385.23"]
 email_address = "hangbarna@gmail.com"
 log_path = "/var/log/auth.log"  # default for ubuntu
+temp_log_path = "/var/log/temp.log"
 file_not_found_error_message = "ERROR: No file on path!"
 program_log = ""
 logging.basicConfig(filename='program.log', level=logging.INFO)
 
 
-def backup_original_log(log):
-    if (os.stat(log).st_size != 0):
-        """ copy log file to script folder """
-        now = datetime.datetime.now()
-        log_name = "log-"+str(now.strftime("%Y-%m-%d-%H-%M"))+".log"
-        shutil.copy2(log, log_name)
-    else:
-        logging.info("File was empty no threats!")
+def get_new_log_entries():
 
+    # unique case! for first run we have to create the temp file after that the program will terminate
+    if not os.path.isfile(temp_log_path):
+        f = open(temp_log_path, "w+")
+        f.close()
+        logging.info("Temp file created, run again to start processing!")
+        sys.exit("Temp file created! Run again to process!")
+    elif os.path.isfile(temp_log_path) and os.path.isfile(log_path):
+        with open(log_path) as f:
+            original = f.readlines()
 
-def read_file(path):
-    if (os.stat(path).st_size != 0):
-        with open(path) as f:
-            content = f.readlines()
+        with open(temp_log_path) as f:
+            temp = f.readlines()
 
-        # delete old log
-        os.remove(path)
-        # you may also want to remove whitespace characters like `\n` at the end of each line
-        content = [x.strip() for x in content]
-        # we need lines that contains the word Failed
-        content = [x for x in content if "Failed" in x]
-        # for line in content:
-        #    print(line)
-        return content
-    return ""
+        # we need the last lines first
+        original_length = len(original)
+        original = list(reversed(original))
+        temp = list(reversed(temp))
+
+        new_lines = []
+
+        for i in range(0, original_length):
+            if original[i] != temp[i]:
+                # we only care about failed login attempts
+                if ("Failed" in original[i]):
+                    new_lines.append(original[i])
+            else:
+                logging.info("line processing ended at line: "+str(i))
+                break
+
+        # filter for failed
+        #new_lines = [x for x in new_lines if "Failed" in x]
+        return new_lines
 
 
 def send_email(lines):
@@ -94,7 +104,11 @@ def generate_iptables_script(lines_array):
         for line in lines_array:
 
             ip = re.findall(r'[0-9]+(?:\.[0-9]+){3}', line)
-            ip = ip[0]
+            try:
+                ip = ip[0]
+            except IndexError:
+                logging.error("Line processed without IP")
+                continue
 
             if ip not in whitelisted_ip:
                 text = "iptables -A INPUT -s {} -j DROP".format(ip)
@@ -105,9 +119,8 @@ def generate_iptables_script(lines_array):
 
 
 if __name__ == "__main__":
-    path = current_path()
-    backup_original_log(path)
-    lines = read_file(path)
+    #path = current_path()
+    lines = get_new_log_entries()
     send_email(lines)
     generate_iptables_script(lines)
     logging.info("Job finished running at: "+str(datetime.datetime.now()))
