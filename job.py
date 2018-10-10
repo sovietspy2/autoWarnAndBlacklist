@@ -15,7 +15,7 @@ import datetime
 import smtplib
 from email.mime.text import MIMEText
 
-email_address = "hangbarna@gmail.com"
+email_address = "qkac1234@gamma.ttk.pte.hu"
 log_path = "/var/log/auth.log"  # default for ubuntu
 
 
@@ -42,7 +42,7 @@ def send_email(lines):
     msg = MIMEText(str(lines))
     msg['Subject'] = 'Warning from your server'
     msg['From'] = 'Amadeus <info@wortex.stream>'
-    msg['To'] = 'hangbarna@gmail.com'
+    msg['To'] = email_address
     s = smtplib.SMTP('localhost')
     s.send_message(msg)
     print("email was sent to:" + email_address)
