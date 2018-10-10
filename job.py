@@ -22,7 +22,7 @@ log_path = "/var/log/auth.log"  # default for ubuntu
 temp_log_path = "/var/log/temp.log"
 file_not_found_error_message = "ERROR: No file on path!"
 program_log = ""
-logging.basicConfig(filename='program.log', level=logging.INFO)
+logging.basicConfig(filename='/home/sovietspy2/program.log', level=logging.INFO)
 
 
 def get_new_log_entries():
