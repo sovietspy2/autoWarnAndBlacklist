@@ -39,7 +39,7 @@ def read_file(path):
 
 
 def send_email(lines):
-    msg = MIMEText(lines)
+    msg = MIMEText(str(lines))
     msg['Subject'] = 'Warning from your server'
     msg['From'] = 'Amadeus <info@wortex.stream>'
     msg['To'] = 'hangbarna@gmail.com'
