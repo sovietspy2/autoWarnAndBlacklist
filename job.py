@@ -15,6 +15,8 @@ import datetime
 import smtplib
 from email.mime.text import MIMEText
 
+
+whitelisted_ip = "1.2.3.4.5.6.7"
 email_address = "hangbarna@gmail.com"
 log_path = "/var/log/auth.log"  # default for ubuntu
 
@@ -29,17 +31,25 @@ def backup_original_log(log):
 def read_file(path):
     with open(path) as f:
         content = f.readlines()
+
+    # delete old log
+    os.remove(path)
     # you may also want to remove whitespace characters like `\n` at the end of each line
-    #content = [x.strip() for x in content]
+    content = [x.strip() for x in content]
     # we need lines that contains the word Failed
-    content = [x for x in content if "Failed" in x]
+    content = [x for x in content if "Failed" in x and whitelisted_ip not in x]
     # for line in content:
     #    print(line)
     return content
 
 
 def send_email(lines):
-    msg = MIMEText(str(lines))
+
+    body = "Here is a list of the latest unsussesful logins"
+    for line in lines:
+        body += line+"\n"  # more fancy email?
+
+    msg = MIMEText(body)
     msg['Subject'] = 'Warning from your server'
     msg['From'] = 'Amadeus <info@wortex.stream>'
     msg['To'] = email_address
