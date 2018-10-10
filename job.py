@@ -15,7 +15,7 @@ import datetime
 import smtplib
 from email.mime.text import MIMEText
 
-email_address = "qkac1234@gamma.ttk.pte.hu"
+email_address = "hangbarna@gmail.com"
 log_path = "/var/log/auth.log"  # default for ubuntu
 
 
