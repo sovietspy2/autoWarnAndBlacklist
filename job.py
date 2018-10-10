@@ -61,7 +61,7 @@ def get_new_log_entries():
 
 def send_email(lines):
     if (lines):
-        body = "Here is a list of the latest unsussesful logins"
+        body = "Here is a list of the latest unsussesful logins\n"
         for line in lines:
             body += line+"\n"  # more fancy email?
 
@@ -117,8 +117,9 @@ def generate_iptables_script(lines_array):
 
 
 if __name__ == "__main__":
+    logging.info("+Job started running at: "+str(datetime.datetime.now()))
     #path = current_path()
     lines = get_new_log_entries()
     send_email(lines)
     generate_iptables_script(lines)
-    logging.info("Job finished running at: "+str(datetime.datetime.now()))
+    logging.info("-Job finished running at: "+str(datetime.datetime.now()))
