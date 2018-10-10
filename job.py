@@ -45,6 +45,7 @@ def send_email(lines):
     msg['To'] = 'hangbarna@gmail.com'
     s = smtplib.SMTP('localhost')
     s.send_message(msg)
+    print("email was sent to:" + email_address)
     s.quit()
 
 
