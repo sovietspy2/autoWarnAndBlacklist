@@ -41,24 +41,20 @@ def get_new_log_entries():
 
         # we need the last lines first
         original_length = len(original)
+        temp_length = len(temp)
         original = list(reversed(original))
         temp = list(reversed(temp))
 
         new_lines = []
 
-        last = []
-        for i in range(0, original_length):
-            if original[i] != temp[i] and temp[i] not in last:
-                # we only care about failed login attempts
-                last.append(original[i])
+        line_number = original_length-temp_length
+        
+        if (line_number > 0):
+            for i in range(0,line_number):
                 if ("Failed" in original[i]):
                     new_lines.append(original[i])
-            else:
-                logging.info("line processing ended at line: "+str(i))
-                break
 
-        # filter for failed
-        #new_lines = [x for x in new_lines if "Failed" in x]
+
         return new_lines
 
 
