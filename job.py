@@ -29,8 +29,7 @@ def get_new_log_entries():
 
     # unique case! for first run we have to create the temp file after that the program will terminate
     if not os.path.isfile(temp_log_path):
-        f = open(temp_log_path, "w+")
-        f.close()
+        shutil.copy2(log_path, temp_log_path)
         logging.info("Temp file created, run again to start processing!")
         sys.exit("Temp file created! Run again to process!")
     elif os.path.isfile(temp_log_path) and os.path.isfile(log_path):

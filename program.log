@@ -1,0 +1,15 @@
+INFO:root:No argument passed using default: /var/log/auth.log
+INFO:root:File was empty no threats!
+INFO:root:Job finished running at: 2018-10-10 16:53:39.595550
+INFO:root:line processing ended at line: 3
+INFO:root:line processing ended at line: 3
+INFO:root:line processing ended at line: 3
+INFO:root:line processing ended at line: 3
+ERROR:root:Line processed without IP
+INFO:root:Job finished running at: 2018-10-10 18:07:09.327486
+INFO:root:line processing ended at line: 3
+ERROR:root:Line processed without IP
+INFO:root:Job finished running at: 2018-10-10 18:08:03.095058
+INFO:root:line processing ended at line: 3
+ERROR:root:Line processed without IP
+INFO:root:Temp file created, run again to start processing!
